@@ -1,5 +1,7 @@
 # DynamicNets
 
-This repository will hold fothcoming MATLAB package accompanying the paper Dynamic Horizon Specific Network Risk [available here for download](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=3622200) (June 8 2020) for estimation of dynamic horizon specific networks.
+The code provides estimation and inference for *dynamic networks* measures introduced in the following papers
 
-To be published soon...
+Baruník, J. and Ellington, M. (2020): *Dynamic Networks in Large Financial and Economic Systems*, manuscript [available here for download](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=3651134) (July 2020) 
+
+Baruník, J. and Ellington, M. (2020): *Dynamic Network Risk*, manuscript [available here for download](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=3622200) (July 2020) 
