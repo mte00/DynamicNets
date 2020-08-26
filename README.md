@@ -16,3 +16,18 @@ The toy data is daily and we provide an example of dynamic horizon specific netw
 * short run: 1 - 5 days (up to one week)
 * medium run: 5 - 20 days (week up to month)
 * long run: 20 + days (more than month)
+
+## Main Files
+
+Dynamic_Nets_Master.m is the master file
+dynamic_networks.m is the function with the TVP VAR estimation. See inputs and outputs in the file.  
+Within this function, you may want to change the variables: 
+* w which denotes the kernel width (default is set to 8).
+* HO which denotes the horizon you compute the wold decomposition for (default set to 10+1 for speed, for applications you should set to large value such as 100. This will cause computation time to increase).
+
+get_dynnet.m is the function that computes the time-frequency network measures. See inputs and outputs in the file.
+Within this function, you may want to change the variables:
+* d1 which determines long-term definition (default is set to >20-days)
+* d2 which determines medium-term definition (default is set to 5-days to 20-days)
+* d3 which determines short-term definition (default is set to 1-day to 5-days)
+### Note that d1, d2, d3 are dependent on the frequency you observe your data and will depend on the application at hand. You will need to look at omeg2 to determine your horizons.
