@@ -75,7 +75,8 @@ clear temp
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % generate weights
 %weights=normker(T,sqrt(T)); % This is PETROVA'S DEFAULT
-weights=normker(T,8); % HERE 8 Denotes the width of the kernel change if you wish
+w=8;
+weights=normker(T,w); % HERE 8 Denotes the width of the kernel change if you wish
 % Follow Petrova (2019) work with precision
 priorprec0=PI^(-1);
 clear PI data dat2 ind
