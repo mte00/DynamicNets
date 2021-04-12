@@ -141,7 +141,7 @@ parfor kk=1:T
          SIGMA=iwishrnd(bayesgamma,bayesalpha); % Draw from IW distribution
          nu=randn(N*L+1,N);
          Fi1=(BB+chol(bayessv)'*nu*(chol(SIGMA)))';         
-         max_eig(ii,kk)=max(abs(eig([Fi1(:,2:end); eye(N), zeros(N,N)])));
+         max_eig(ii,kk)=max(abs(eig(varcompanion(Fi1,1,N,L))));
          if max_eig(ii,kk)<.999 % check stability of draw
              stab_ind(ii,kk)=1;
              mm=1;
