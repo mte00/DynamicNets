@@ -1,5 +1,5 @@
 function [TFC,TC1,TC2,TC3,WC1,WC2,WC3,DCTL,DCTM,DCTS,DCTT,DCRL,DCRM,DCRS,DCRT,...
-    NDCL,NDCM,NDCS,TNDC]=get_dynnet(wo,TT,sig,diagonal)
+    NDCL,NDCM,NDCS,TNDC,CONN_T,CONN_L,CONN_M,CONN_S]=get_dynnet(wo,TT,sig,diagonal)
 %**************************************************************************
 % Michael Ellington 26/08/2020
 % Dynamic Network Estimation as in:
@@ -42,6 +42,11 @@ function [TFC,TC1,TC2,TC3,WC1,WC2,WC3,DCTL,DCTM,DCTS,DCTT,DCRL,DCRM,DCRS,DCRT,..
 %          NDCM is med-term net directional connectedness
 %          NDCS is short-term net directional connectedness
 %          TNDC is total net directional freq connectedness
+%          CONN_T is connectedness table (adjacency matrix) for time
+%          aggregate
+%          CONN_L is connectedness table (adjacency matrix) long-term
+%          CONN_M is connectedness table (adjacency matrix) medium-term
+%          CONN_S is connectedness table (adjacency matrix) long-term
 %**************************************************************************
 % Define frequency window;
 Tw=floor(TT/10); % approximates the total frequency window.
@@ -120,16 +125,21 @@ end
 end
 
 thetainf=sum(FC,3);
+CONN_T=thetainf;
 
 % Now get long-term
 temp1=sum(FC(:,:,1:d1),3); % theta_{d1} summed over (0 to 0.1576)
+CONN_L=temp1;
+%for j=1:N
+%    temp1(j,:)=temp1(j,:)./sum(thetainf(j,:));
+%end
 
 % get net directional connectedness matrix on Frequency L
 for i=1:N
    tr(i,:)=sum(temp1(i,:))-temp1(i,i);
    tt(i,:)=sum(temp1(:,i))-temp1(i,i);
-   DCRL(i,:)=sum(temp1(i,:));
-   DCTL(i,:)=sum(temp1(:,i));
+   DCRL(i,:)=tr(i,:);
+   DCTL(i,:)=tt(i,:);
 %   DCRL(i,:)=sum(temp1(i,:))/temp1(i,i);
 %   DCTL(i,:)=sum(temp1(:,i))/temp1(i,i); % normalises directions to own shocks
 end
@@ -140,13 +150,17 @@ TC1=WC1*(sum(sum(temp1))/sum(sum(thetainf)));
 
 % Now get med-term % theta_{d2} summed over (0.1576 to 0.6283)
 temp1=sum(FC(:,:,d1+1:length(omeg)-d3),3);
+CONN_M=temp1;
+%for j=1:N
+%    temp1(j,:)=temp1(j,:)./sum(thetainf(j,:));
+%end
 
 % get net directional connectedness matrix on Frequency M
 for i=1:N
    tr(i,:)=sum(temp1(i,:))-temp1(i,i);
    tt(i,:)=sum(temp1(:,i))-temp1(i,i);
-   DCRM(i,:)=sum(temp1(i,:));
-   DCTM(i,:)=sum(temp1(:,i));
+   DCRM(i,:)=tr(i,:);
+   DCTM(i,:)=tt(i,:);
 %   DCRM(i,:)=sum(temp1(i,:))/temp1(i,i);
 %   DCTM(i,:)=sum(temp1(:,i))/temp1(i,i);
 end
@@ -157,13 +171,17 @@ TC2=WC2*(sum(sum(temp1))/sum(sum(thetainf)));
 
 % Now get short-term % theta_{d3} summed over (0.6283 to \pi)
 temp1=sum(FC(:,:,d1+d2+1:end),3);
+CONN_S=temp1;
+%for j=1:N
+%    temp1(j,:)=temp1(j,:)./sum(thetainf(j,:));
+%end
 
 % get net directional connectedness matrix on Frequency S
 for i=1:N
    tr(i,:)=sum(temp1(i,:))-temp1(i,i);
    tt(i,:)=sum(temp1(:,i))-temp1(i,i);
-   DCRS(i,:)=sum(temp1(i,:));
-   DCTS(i,:)=sum(temp1(:,i));
+   DCRS(i,:)=tr(i,:);
+   DCTS(i,:)=tt(i,:);
 %   DCRS(i,:)=sum(temp1(i,:))/temp1(i,i);
 %   DCTS(i,:)=sum(temp1(:,i))/temp1(i,i);
 end
@@ -177,12 +195,15 @@ tfc=TC1+TC2+TC3;
 
 % below is a checker that proposition holds.
 temp1=sum(FC,3);
+%for j=1:N
+%    temp1(j,:)=temp1(j,:)./sum(thetainf(j,:));
+%end
 % get net directional connectedness matrix on Frequency Total
 for i=1:N
-   tr(i,:)=sum(temp1(i,:))-temp1(i,i);
-   tt(i,:)=sum(temp1(:,i))-temp1(i,i);
-   DCRT(i,:)=sum(temp1(i,:));
-   DCTT(i,:)=sum(temp1(:,i));
+   tr(i,:)=sum(thetainf(i,:))-thetainf(i,i);
+   tt(i,:)=sum(thetainf(:,i))-thetainf(i,i);
+   DCRT(i,:)=tr(i,:);
+   DCTT(i,:)=tt(i,:);
 %   DCRT(i,:)=sum(temp1(i,:))/temp1(i,i);
 %   DCTT(i,:)=sum(temp1(:,i))/temp1(i,i);
 end
@@ -195,6 +216,11 @@ if abs(tfc-tfc1)<eps+1.0e-10 % If these are equal to approximately 10d.p then al
    TFC=tfc;
 else
     error('DIFFERENCE EXCEEDS ALLOWANCE OF eps+1.0e-10')
+end
+
+if abs(CONN_L+CONN_M+CONN_S-CONN_T)<eps+1.0e-10
+else
+    error('CONNECTEDNESS TABLES over freuqencies do not add up, DIFFERENCE EXCEEDS ALLOWANCE OF eps+1.0e-10')
 end
 
 end
