@@ -31,3 +31,9 @@ Within this function, you may want to change the variables:
 * d2 which determines medium-term definition (default is set to 5-days to 20-days)
 * d3 which determines short-term definition (default is set to 1-day to 5-days)
 ### Note that d1, d2, d3 are dependent on the frequency you observe your data and will depend on the application at hand. You will need to look at omeg2 to determine your horizons.
+
+### Update 13/05/2021 Code now provides ADJACENCY MATRICES across horizons and aggregated over horizons. From this you can readily compute pairwise connections. 
+function get_dynnet.m provides the adjacency matrices at each horizon and also aggregated across all horizons (Diebold Yilmaz, 2014).
+Dynamic_Nets_Master.m is the master file and provides the user with the NxNxT adjacency matrices which is the posterior median over draws from the QBLL methodology. 
+dynamic_networks.m updated to save adjacency matrices at each draw from posterior distribution.
+You will need to download these scripts again to estimate.
