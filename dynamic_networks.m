@@ -1,5 +1,6 @@
 function [WC_S,WC_M,WC_L,TC_S,TC_M,TC_L,TF_C,...
-    ND_S,ND_M,ND_L,TN_C,CT_S,CT_M,CT_L,CT_T,CR_S,CR_M,CR_L,CR_T] = dynamic_networks(data,nsim,L)
+    ND_S,ND_M,ND_L,TN_C,CT_S,CT_M,CT_L,CT_T,CR_S,CR_M,CR_L,CR_T,...
+    TABT,TABL,TABM,TABS] = dynamic_networks(data,nsim,L)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % This function estimates Dyanmic Networks introduced in:                 %
 % Barunik J. and Ellington M. (2020): Dynamic Networks in Large Financial %
@@ -42,6 +43,10 @@ function [WC_S,WC_M,WC_L,TC_S,TC_M,TC_L,TF_C,...
 % CR_M: Medium-term FROM connectedness
 % CR_L: Long-term FROM connectedness
 % CR_T: Total FROM connectedness
+% TABT: Total adjacency matrix
+% TABL: Long-term adjacency matrix
+% TABM: Medium-term adjacency matrix
+% TABS: Short-term adjacency matrix
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % NOTE THAT IN THE FUNCTION get_dynnet() WE DEFINE FREQUENCIES BASED ON OUR
@@ -103,6 +108,7 @@ ND_L=single(zeros(T,N,nsim));
 ND_M=ND_L; ND_S=ND_L; TN_C=ND_L; % Net-directional connectedness over frequency bands.
 CT_L=ND_L; CT_M=ND_L; CT_S=ND_L; CT_T=ND_L;
 CR_L=ND_L; CR_M=ND_L; CR_S=ND_L; CR_T=ND_L;
+TABT=single(zeros(N,N,nsim,T)); TABL=TABT; TABM=TABT; TABS=TABT;
 
 tic;
 
@@ -118,6 +124,7 @@ parfor kk=1:T
    ndcl=zeros(N,nsim); ndcm=ndcl; ndcs=ndcl; tndc=ndcl;
    ctcl=zeros(N,nsim); ctcm=ndcl; ctcs=ndcl; ctct=ndcl;
    crcl=zeros(N,nsim); crcm=ndcl; crcs=ndcl; crct=ndcl;
+   tabt=zeros(N,N,nsim); tabl=tabt; tabm=tabt; tabs=tabt;
    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
    % Estimation and connectedness computing
    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -149,13 +156,14 @@ parfor kk=1:T
      end
      [~,wold]=get_GIRF(Fi1,SIGMA,1,L,HO-1);
      [ttfc,tc1,tc2,tc3,wc1,wc2,wc3,ct1,ct2,ct3,ctt,cr1,cr2,cr3,crt,... 
-         ndc1,ndc2,ndc3,tnd1]=get_dynnet(wold,T,SIGMA,diagonal); % efficient code to get frequency connectedness
+         ndc1,ndc2,ndc3,tnd1,tablet,tablel,tablem,tables]=get_dynnet(wold,T,SIGMA,diagonal); % efficient code to get frequency connectedness
      wcs(:,ii)=wc3; wcm(:,ii)=wc2; wcl(:,ii)=wc1;
      tcs(:,ii)=tc3; tcm(:,ii)=tc2; tcl(:,ii)=tc1;
      tfc(:,ii)=ttfc;
      ndcl(:,ii)=ndc1; ndcm(:,ii)=ndc2; ndcs(:,ii)=ndc3; tndc(:,ii)=tnd1;
      ctcl(:,ii)=ct1; ctcm(:,ii)=ct2; ctcs(:,ii)=ct3; ctct(:,ii)=ctt;
      crcl(:,ii)=cr1; crcm(:,ii)=cr2; crcs(:,ii)=cr3; crct(:,ii)=crt;
+     tabt(:,:,ii)=tablet; tabl(:,:,ii)=tablel; tabm(:,:,ii)=tablem; tabs(:,:,ii)=tables;
   end
  WC_S(kk,:)=wcs; WC_M(kk,:)=wcm; WC_L(kk,:)=wcl;
  TC_S(kk,:)=tcs; TC_M(kk,:)=tcm; TC_L(kk,:)=tcl;
@@ -166,6 +174,8 @@ parfor kk=1:T
  CT_T(kk,:,:)=ctct;
  CR_S(kk,:,:)=crcs; CR_M(kk,:,:)=crcm; CR_L(kk,:,:)=crcl;
  CR_T(kk,:,:)=crct;
+ TABT(:,:,:,kk)=tabt; TABL(:,:,:,kk)=tabl;
+ TABM(:,:,:,kk)=tabm; TABS(:,:,:,kk)=tabs;
 end
 toc
 end

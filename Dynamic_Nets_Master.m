@@ -34,7 +34,7 @@ L=2;             % lag length
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 [WC_S,WC_M,WC_L,TC_S,TC_M,TC_L,TF_C,...
  ND_S,ND_M,ND_L,TN_C,CT_S,CT_M,CT_L,...
- CT_T,CR_S,CR_M,CR_L,CR_T]=dynamic_networks(data,nsim,L);
+ CT_T,CR_S,CR_M,CR_L,CR_T,TABT,TABL,TABM,TABS]=dynamic_networks(data,nsim,L);
 % Time to estimate on 64GB Desktop PC with i7 3.70GHz 6-core processor:
 % 226.22 seconds.
 
@@ -63,6 +63,12 @@ CR_S=quantile(CR_S,qq,3);
 CR_M=quantile(CR_M,qq,3);
 CR_L=quantile(CR_L,qq,3); 
 CR_T=quantile(CR_T,qq,3); % FROM FREQUENCY CONNECT
+TABT=squeeze(quantile(TABT,qq(2),3)); % total Connectedness Table (DY 2014)
+TABL=squeeze(quantile(TABL,qq(2),3)); % long term connectedness table
+TABM=squeeze(quantile(TABM,qq(2),3)); % medium term connectedness table
+TABS=squeeze(quantile(TABS,qq(2),3)); % short term connectedness table
+% The connectedness tables here are the posterior medians. They are NxNxT
+% where T is the connectedness table at each time-observation.
 
 % _S denotes short-term, _M denotes medium-term, _L denotes long-term
 % _T/_C denotes total (i.e. sums over frequency bands)
@@ -75,7 +81,7 @@ CR_T=quantile(CR_T,qq,3); % FROM FREQUENCY CONNECT
 % Depending on application you will need to change in get_dynnet() in the 
 % functions folder 
 
-% If you want full posterior distribution delete/comment out lines 46-65
+% If you want full posterior distribution delete/comment out lines 46-69
 % However if you do so the plots below will not work!
 %%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -104,6 +110,21 @@ title('TVP Network Connectedness')
 legend('Total','Short','Medium','Long','Location','SouthOutside')
 
 
+figure(3)
+subplot(2,2,1)
+plotx4(t,[TN_C(:,1,2) TN_C(:,1,1) TN_C(:,1,3)]);
+axis tight
+subplot(2,2,2)
+plotx4(t,[TN_C(:,2,2) TN_C(:,2,1) TN_C(:,2,3)]);
+axis tight
+subplot(2,2,3)
+plotx4(t,[TN_C(:,3,2) TN_C(:,3,1) TN_C(:,3,3)]);
+axis tight
+subplot(2,2,4)
+plotx4(t,[TN_C(:,4,2) TN_C(:,4,1) TN_C(:,4,3)]);
+axis tight
+
+
 %%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Save outputs                                                            %
@@ -115,10 +136,12 @@ varname(7,:)='TF_C'; varname(8,:)='ND_S'; varname(9,:)='ND_M';
 varname(10,:)='ND_L'; varname(11,:)='TN_C'; varname(12,:)='CT_S';
 varname(13,:)='CT_M'; varname(14,:)='CT_L'; varname(15,:)='CT_T';
 varname(16,:)='CR_S'; varname(17,:)='CR_M'; varname(18,:)='CR_L'; 
-varname(19,:)='CR_T';
+varname(19,:)='CR_T'; varname(20,:)='TABT'; varname(21,:)='TABL';
+varname(22,:)='TABM'; varname(23,:)='TABS';
 
 save(DFILE,varname(1,:),varname(2,:),varname(3,:),varname(4,:),varname(5,:),...
     varname(6,:),varname(7,:),varname(8,:),varname(9,:),varname(10,:),varname(11,:),...
     varname(12,:),varname(13,:),varname(14,:),varname(15,:),varname(16,:),...
-    varname(17,:),varname(18,:),varname(19,:));
+    varname(17,:),varname(18,:),varname(19,:),varname(20,:),varname(21,:),varname(22,:),...
+    varname(23,:));
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
