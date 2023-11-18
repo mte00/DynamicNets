@@ -1,10 +1,8 @@
 # DynamicNets
 
-The code provides estimation and inference for *dynamic networks* measures introduced in the following papers
+The code has been developed in Julia as a code accompanying the Barunik and Ellington (2023) and provides an estimation and inference for *dynamic networks* measures introduced in
 
-Baruník, J. and Ellington, M. (2021): *Dynamic Networks in Large Financial and Economic Systems*, manuscript [available here for download](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=3651134) (February 2021) 
-
-Baruník, J. and Ellington, M. (2020): *Dynamic Network Risk*, manuscript [available here for download](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=3622200) (July 2020) 
+Baruník, J. and Ellington, M. (2023): *Persistence in Financial Connectedness and Systemic Risk*, European Journal of Operational Research, forthcoming, manuscript [available here for download](https://ideas.repec.org/p/arx/papers/2007.07842.html) (revised Sep 2023)
 
 ## Time Horizon Dynamics
 
